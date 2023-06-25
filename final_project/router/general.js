@@ -5,6 +5,7 @@ let users = require("./auth_users.js").users;
 const public_users = express.Router();
 
 
+
 public_users.post("/register", (req,res) => {
   if(req.body.username && req.body.password){
       checkUser = users.filter(obj => obj.username === req.body.username);
@@ -19,32 +20,59 @@ public_users.post("/register", (req,res) => {
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/', async function (req, res) {
   //Write your code here
-  
-  return res.send(JSON.stringify(books,null,4));
+  try{
+  return res.send(JSON.stringify(await books,null,4));}
+  catch(err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data.",
+    })
+  }
 });
 
 // Get book details based on ISBN
-public_users.get('/isbn/:isbn',function (req, res) {
+public_users.get('/isbn/:isbn',async function (req, res) {
   //Write your code here
-  return res.send(JSON.stringify(books[req.params.isbn],null,4));
+  try{
+  return res.send(JSON.stringify(await books[req.params.isbn],null,4));}
+  catch(err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data.",
+    })
+  }
  });
   
 // Get book details based on author
-public_users.get('/author/:author',function (req, res) {
+public_users.get('/author/:author',async function (req, res) {
   //Write your code here
+  try{
   let myBook;
-    for(let i = 1;i<=10;i++){if(books[i].author === decodeURIComponent(req.params.author)) myBook = books[i];}
-  return res.send(JSON.stringify(myBook,null,4));
+    for(let i = 1;i<=10;i++){
+        if(await books[i].author === decodeURIComponent(req.params.author)) myBook = books[i];
+    }
+  return res.send(JSON.stringify(myBook,null,4));}
+  catch(err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data.",
+    })
+  }
 });
 
 // Get all books based on title
-public_users.get('/title/:title',function (req, res) {
+public_users.get('/title/:title',async function (req, res) {
   //Write your code here
+  try{
   let myBook;
-    for(let i = 1;i<=10;i++){if(books[i].title === decodeURIComponent(req.params.title)) myBook = books[i];}
-  return res.send(JSON.stringify(myBook,null,4));
+    for(let i = 1;i<=10;i++){
+        if(await books[i].title === decodeURIComponent(req.params.title)) myBook = books[i];
+    }
+  return res.send(JSON.stringify(myBook,null,4));}
+  catch(err) {
+    res.status(500).send({
+      message: err.message || "Some error occurred while retrieving data.",
+    })
+  }
 });
 
 //  Get book review
